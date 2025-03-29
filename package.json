@@ -1,7 +1,16 @@
 {
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "npm init -y\r npm install --save-dev hardhat\r npx hardhat init\r     -> Create a TypeScript project\r     -> root, y, y",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.22.19",
-    "ts-node": "^10.9.2"
+    "hardhat": "^2.22.19"
   }
 }
