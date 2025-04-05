@@ -25,10 +25,12 @@ describe("MyToken", () => {
     });
 
     it("should return 0 totalSupply", async () => {
-        expect(await myTokenC.totalSupply()).equal(0);
+        expect(await myTokenC.totalSupply()).equal(10n**18n);
     });
 
-    it("should return 0 balance for signer 0", async () => {
-        expect(await myTokenC.balanceOf(signers[0]  .address)).equal(0);
+    // 1MT = 1e18
+    it("should return 1MT balance for signer 0", async () => {
+        const signer0 = signers[0];
+        expect(await myTokenC.balanceOf(signer0)).equal(1n*10n**18n);
     });
 });

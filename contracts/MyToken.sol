@@ -15,7 +15,13 @@ contract MyToken {
     constructor(string memory _name, string memory _symbol, uint8 _decimals) {
         name = _name;
         symbol = _symbol;
-        decimals = _decimals;   
+        decimals = _decimals;
+        _mint(1*10**uint256(decimals), msg.sender); // msg.sender는 발행하는 사람 // 1 MT
+    }
+
+    function _mint(uint256 amount, address owner) internal {
+        totalSupply += amount;
+        balanceOf[owner] += amount;
     }
 
     // function totalSupply() public view returns (uint256) {
