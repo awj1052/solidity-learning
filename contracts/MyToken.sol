@@ -24,6 +24,11 @@ contract MyToken {
         balanceOf[owner] += amount;
     }
 
+    function transfer(uint256 amount, address to) external {
+        balanceOf[msg.sender] -= amount;
+        balanceOf[to] += amount;
+    }
+
     // function totalSupply() public view returns (uint256) {
     //     return totalSupply;
     // }
