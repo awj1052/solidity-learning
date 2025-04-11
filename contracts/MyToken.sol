@@ -13,6 +13,7 @@ contract MyToken {
 
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf; // key: address, value: uint256
+    mapping(address => mapping(address => uint256)) allowance;
 
     // 변수는 storage에 저장됨. storage는 블록체인에 저장되는 데이터, memory는 임시로 저장되는 데이터
     // storage는 가스비가 비쌈, memory는 가스비가 적게 듦
@@ -24,6 +25,18 @@ contract MyToken {
         _mint(_amount *10**uint256(decimals), msg.sender); // msg.sender는 발행하는 사람 // amount MT
     }
 
+    function approve(address spender, uint256 amount) external {
+        allowance[msg.sender][spender] = amount; // owner -> spender -> amount amount만큼 보내도 되게 허용
+    }
+
+    function transferFrom(address from, address to, uint256 amount) {
+        address spender = msg.sender;
+        require(allowance[from][spender] >= amount, "insufficient allowance");
+        allowance[from][spender] -= amount;
+        balanceOf[from] -= amount;
+        balanceOf[to] += amount;
+    }
+
     function _mint(uint256 amount, address owner) internal {
         totalSupply += amount;
         balanceOf[owner] += amount;
@@ -32,7 +45,7 @@ contract MyToken {
     }
 
     function transfer(uint256 amount, address to) external {
-        require(balanceOf[msg.sender] >= amount, "insufficient balance");
+        require(balanceOf[msg.sender] >= amount, "insufficient balance");|
         balanceOf[msg.sender] -= amount;
         balanceOf[to] += amount;
 
@@ -49,3 +62,16 @@ contract MyToken {
     //     return name;
     // }
 }
+
+/*
+approve
+ - allow spender address to send my token 내 토큰을 다른 사람이 보낼 수 있게
+ 신뢰할 수 있는 사람, 주소에 위임해야함.
+transferFrom
+ - spender: owner -> target address
+ 권한을 위임 받은 사람이 내 토큰을 다른 사람에게 보내는 것
+
+* token owner --> bank contract
+* token owner --> router contract --> bank contract 일반적인 패턴, router contract에게 권한을 줌
+* token owner --> router contract --> bank contract(multi contract)
+*/
