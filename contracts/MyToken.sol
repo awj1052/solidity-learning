@@ -31,10 +31,11 @@ contract MyToken {
         emit Approval(spender, amount);
     }
 
-    function transferFrom(address from, address to, uint256 amount) {
+    function transferFrom(address from, address to, uint256 amount) external {
         address spender = msg.sender;
         require(allowance[from][spender] >= amount, "insufficient allowance");
         allowance[from][spender] -= amount;
+        // balanceOf 는 require 안하나?
         balanceOf[from] -= amount;
         balanceOf[to] += amount;
         emit Transfer(from, to, amount);
@@ -48,7 +49,7 @@ contract MyToken {
     }
 
     function transfer(uint256 amount, address to) external {
-        require(balanceOf[msg.sender] >= amount, "insufficient balance");|
+        require(balanceOf[msg.sender] >= amount, "insufficient balance");
         balanceOf[msg.sender] -= amount;
         balanceOf[to] += amount;
 
