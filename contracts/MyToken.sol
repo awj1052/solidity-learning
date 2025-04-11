@@ -2,6 +2,11 @@
 pragma solidity ^0.8.28;
 
 contract MyToken {
+    // 3개까지만 indexed 가능함. DB에서 COL에 INDEX KEY 거는 느낌인듯
+    // recipet topics에 Encode된 Event가 들어감. indexed인 param도 같이 들어감. -> topics.length == 3
+    // search를 할 때는 topics에서 찾음
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
     string public name;
     string public symbol;
     uint8 public decimals;
@@ -22,12 +27,16 @@ contract MyToken {
     function _mint(uint256 amount, address owner) internal {
         totalSupply += amount;
         balanceOf[owner] += amount;
+
+        emit Transfer(address(0), owner, amount); // 무 -> owner
     }
 
     function transfer(uint256 amount, address to) external {
         require(balanceOf[msg.sender] >= amount, "insufficient balance");
         balanceOf[msg.sender] -= amount;
         balanceOf[to] += amount;
+
+        emit Transfer(msg.sender, to, amount);
     }
 
     // function totalSupply() public view returns (uint256) {
