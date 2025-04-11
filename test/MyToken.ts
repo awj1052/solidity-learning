@@ -39,4 +39,11 @@ describe("MyToken", () => {
         await myTokenC.transfer(hre.ethers.parseUnits("0.5", 18), signer1.address);
         expect(await myTokenC.balanceOf(signer1)).equal(hre.ethers.parseUnits("0.5", 18));
     });
+
+    it("should be reverted with insufficient balance error", async () => {
+        const signer1 = signers[1];
+        await expect( // testing framework가 대신 실행(await)하고 오류를 확인
+            myTokenC.transfer(hre.ethers.parseUnits("1.1", 18), signer1.address) // 이 자체를 넘겨줌
+        ).to.be.revertedWith("insufficient balance")
+    });
 });
