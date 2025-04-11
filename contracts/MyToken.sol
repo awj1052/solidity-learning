@@ -6,6 +6,7 @@ contract MyToken {
     // recipet topics에 Encode된 Event가 들어감. indexed인 param도 같이 들어감. -> topics.length == 3
     // search를 할 때는 topics에서 찾음
     event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed spender, uint256 amount);
 
     string public name;
     string public symbol;
@@ -27,6 +28,7 @@ contract MyToken {
 
     function approve(address spender, uint256 amount) external {
         allowance[msg.sender][spender] = amount; // owner -> spender -> amount amount만큼 보내도 되게 허용
+        emit Approval(spender, amount);
     }
 
     function transferFrom(address from, address to, uint256 amount) {
@@ -35,6 +37,7 @@ contract MyToken {
         allowance[from][spender] -= amount;
         balanceOf[from] -= amount;
         balanceOf[to] += amount;
+        emit Transfer(from, to, amount);
     }
 
     function _mint(uint256 amount, address owner) internal {
