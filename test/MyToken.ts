@@ -85,4 +85,14 @@ describe("My Token", () => {
             .to.be.revertedWith("insufficient allowance");
         });
     });
+
+    describe("Assignment (approve & transferFrom)", () => {
+        it("should transfer 0.5MT from signer0 to signer1", async () => {
+            const signer0 = signers[0];
+            const signer1 = signers[1];
+            await myTokenC.approve(signer1.address, hre.ethers.parseUnits("10", decimals));
+            await expect(myTokenC.connect(signer1).transferFrom(signer0.address, signer1.address, hre.ethers.parseUnits("0.5", decimals)))
+            .to.emit(myTokenC, "Transfer").withArgs(signer0.address, signer1.address, hre.ethers.parseUnits("0.5", decimals));
+        });
+    });
 });
