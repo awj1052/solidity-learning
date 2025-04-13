@@ -10,7 +10,7 @@ describe("My Token", () => {
     let myTokenC: MyToken;
     let signers: HardhatEthersSigner[];
 
-    before(async () => {
+    beforeEach(async () => {
         signers = await hre.ethers.getSigners();
         myTokenC = await hre.ethers.deployContract("MyToken", ["MyToken", "MT", decimals, mintingAmount]);
     });
@@ -79,7 +79,9 @@ describe("My Token", () => {
         it("should be reverted with insufficient allowance error", async () => {
             const signer0 = signers[0];
             const signer1 = signers[1];
-            await expect(myTokenC.connect(signer1).transferFrom(signer0.address, signer1.address, hre.ethers.parseUnits("1", decimals)))
+            //const log = await myTokenC.connect(signer1).transferFrom(signer0.address, signer1.address, hre.ethers.parseUnits("1", decimals));
+            //console.log(log);
+            await expect(myTokenC.connect(signer1).transferFrom(signer0.address, signer1.address, hre.ethers.parseUnits("11", decimals)))
             .to.be.revertedWith("insufficient allowance");
         });
     });
