@@ -14,7 +14,7 @@ contract MyToken {
 
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf; // key: address, value: uint256
-    mapping(address => mapping(address => uint256)) allowance;
+    mapping(address => mapping(address => uint256)) public allowance;
 
     // 변수는 storage에 저장됨. storage는 블록체인에 저장되는 데이터, memory는 임시로 저장되는 데이터
     // storage는 가스비가 비쌈, memory는 가스비가 적게 듦
