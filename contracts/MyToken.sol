@@ -42,7 +42,7 @@ contract MyToken {
     }
 
     function mint(uint256 amount, address owner) external {
-        require(msg.sender == address(this), "only contract can mint"); // contract만 발행 가능
+        // require(msg.sender == address(this), "only contract can mint"); // contract만 발행 가능
         _mint(amount, owner);
     }
 

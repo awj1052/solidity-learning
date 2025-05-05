@@ -26,6 +26,10 @@ contract TinyBank {
     }
 
     function updateReward(address to) internal {
+        if (staked[to] == 0) {
+            lastClaimedBlock[to] = block.number;
+            return;
+        }
         uint256 blocks = block.number - lastClaimedBlock[to];
         uint256 reward = rewardPerBlock * blocks * staked[to] / totalStaked;
         stakingToken.mint(reward, to);
