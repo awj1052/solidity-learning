@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-contract MyToken {
+import "./ManagedAccess.sol";
+
+contract MyToken is ManagedAccess {
     // 3개까지만 indexed 가능함. DB에서 COL에 INDEX KEY 거는 느낌인듯
     // recipet topics에 Encode된 Event가 들어감. indexed인 param도 같이 들어감. -> topics.length == 3
     // search를 할 때는 topics에서 찾음
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed spender, uint256 amount);
 
-    address public owner;
-    address public manager;
     string public name;
     string public symbol;
     uint8 public decimals;
@@ -21,23 +21,11 @@ contract MyToken {
     // 변수는 storage에 저장됨. storage는 블록체인에 저장되는 데이터, memory는 임시로 저장되는 데이터
     // storage는 가스비가 비쌈, memory는 가스비가 적게 듦
     // 지역변수는 memory에 저장하는 것이 가장 효율적임
-    constructor(string memory _name, string memory _symbol, uint8 _decimals, uint256 _amount) {
-        owner = msg.sender; // contract를 배포한 사람
-        manager = msg.sender;
+    constructor(string memory _name, string memory _symbol, uint8 _decimals, uint256 _amount) ManagedAccess(msg.sender, msg.sender) {
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
         _mint(_amount *10**uint256(decimals), msg.sender); // msg.sender는 발행하는 사람 // amount MT
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "You are not authorized"); // contract만 발행 가능
-        _;
-    }
-
-    modifier onlyManager() {
-        require(msg.sender == manager, "You are not authorized to manage this token");
-        _;
     }
 
     function approve(address spender, uint256 amount) external {
