@@ -26,13 +26,11 @@ contract TinyBank {
     }
 
     modifier updateReward(address to) {
-        if (staked[to] == 0) {
-            lastClaimedBlock[to] = block.number;
-            return;
+        if (staked[to] > 0) {
+            uint256 blocks = block.number - lastClaimedBlock[to];
+            uint256 reward = rewardPerBlock * blocks * staked[to] / totalStaked;
+            stakingToken.mint(reward, to);
         }
-        uint256 blocks = block.number - lastClaimedBlock[to];
-        uint256 reward = rewardPerBlock * blocks * staked[to] / totalStaked;
-        stakingToken.mint(reward, to);
         lastClaimedBlock[to] = block.number;
         _; // caller's code
     }

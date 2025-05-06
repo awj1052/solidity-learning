@@ -8,6 +8,8 @@ contract MyToken {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed spender, uint256 amount);
 
+    address public owner;
+    address public manager;
     string public name;
     string public symbol;
     uint8 public decimals;
@@ -20,10 +22,22 @@ contract MyToken {
     // storage는 가스비가 비쌈, memory는 가스비가 적게 듦
     // 지역변수는 memory에 저장하는 것이 가장 효율적임
     constructor(string memory _name, string memory _symbol, uint8 _decimals, uint256 _amount) {
+        owner = msg.sender; // contract를 배포한 사람
+        manager = msg.sender;
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
         _mint(_amount *10**uint256(decimals), msg.sender); // msg.sender는 발행하는 사람 // amount MT
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "You are not authorized"); // contract만 발행 가능
+        _;
+    }
+
+    modifier onlyManager() {
+        require(msg.sender == manager, "You are not authorized to manage this token");
+        _;
     }
 
     function approve(address spender, uint256 amount) external {
@@ -41,16 +55,19 @@ contract MyToken {
         emit Transfer(from, to, amount);
     }
 
-    function mint(uint256 amount, address owner) external {
-        // require(msg.sender == address(this), "only contract can mint"); // contract만 발행 가능
-        _mint(amount, owner);
+    function mint(uint256 amount, address to) external onlyManager {
+        _mint(amount, to);
     }
 
-    function _mint(uint256 amount, address owner) internal {
+    function setManager(address _manager) external onlyOwner {
+        manager = _manager; // contract manager
+    }
+    
+    function _mint(uint256 amount, address to) internal {
         totalSupply += amount;
-        balanceOf[owner] += amount;
+        balanceOf[to] += amount;
 
-        emit Transfer(address(0), owner, amount); // 무 -> owner
+        emit Transfer(address(0), to, amount); // 무 -> to
     }
 
     function transfer(uint256 amount, address to) external {

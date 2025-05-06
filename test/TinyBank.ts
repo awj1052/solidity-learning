@@ -13,6 +13,7 @@ describe("TinyBank", () => {
         signers = await hre.ethers.getSigners();
         myTokenC = await hre.ethers.deployContract("MyToken", ["MyToken", "MT", DECIMALS, MINTING_AMOUNT]);
         tinyBankC = await hre.ethers.deployContract("TinyBank", [await myTokenC.getAddress()]);
+        await myTokenC.setManager(tinyBankC.getAddress()); // reward 때문에 manager로 설정
     });
 
     describe("Initialized state check", () => {
