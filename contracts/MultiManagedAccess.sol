@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 abstract contract MultiManagedAccess {
-    uint constant MANAGER_NUMBERS = 5;
+    uint constant MANAGER_NUMBERS = 3;
     address public owner;
     address[MANAGER_NUMBERS] public managers;
     bool[MANAGER_NUMBERS] public confirmed;
@@ -27,25 +27,26 @@ abstract contract MultiManagedAccess {
         return true;
     }
 
+    function isManager() internal view returns (uint256) {
+        for(uint256 i = 0; i < MANAGER_NUMBERS; i++) {
+            if (msg.sender == managers[i]) return i;
+        }
+        revert("You are not a manager");
+    }
+
     function reset() internal {
         for(uint256 i = 0; i < MANAGER_NUMBERS; i++) confirmed[i] = false;
     }
 
     modifier onlyAllConfirmed() {
-        require(allConfirmed(), "Not all managers confirmed yet");
+        isManager();
+        require(allConfirmed(), "Not all confirmed yet");
         reset();
         _;
     }
 
     function confirm() external {
-        bool found = false;
-        for(uint256 i = 0; i < MANAGER_NUMBERS; i++) {
-            if (msg.sender == managers[i]) {
-                found = true;
-                confirmed[i] = true;
-                break;
-            }
-        }
-        require(found, "You are not one of managers");
+        uint256 index = isManager();
+        confirmed[index] = true;
     }
 }
