@@ -1,10 +1,19 @@
 import hre from "hardhat";
+import { NativeBank } from "../typechain-types/NativeBank";
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+import { expect } from "chai";
 
 describe("NativeBank", () => {
+    let signers: HardhatEthersSigner[];
+    let nativeBankC: NativeBank;
+
+    beforeEach("Depoly NativeBank contract", async () => {
+        signers = await hre.ethers.getSigners();
+        nativeBankC = await hre.ethers.deployContract("NativeBank");
+        
+    });
     it("Should send native token to contract", async () => {
-        const singers = await hre.ethers.getSigners();
-        const staker = singers[0];
-        const nativeBankC = await hre.ethers.deployContract("NativeBank");
+        const staker = signers[0];
 
         const tx = {
             from: staker.address,
@@ -17,5 +26,21 @@ describe("NativeBank", () => {
         console.log(await hre.ethers.provider.getBalance(await nativeBankC.getAddress()));
         // blanace of staker
         console.log(await nativeBankC.balanceOf(staker.address));
+    });
+
+    it("Should withdraw all the tokens", async () => {
+        const staker = signers[0];
+        const stakingAmount = hre.ethers.parseEther("10");
+        const tx = {
+            from: staker.address,
+            to: await nativeBankC.getAddress(),
+            value: stakingAmount,
+        }
+        const sendTx = await staker.sendTransaction(tx);
+        await sendTx.wait();
+        expect(await nativeBankC.balanceOf(staker.address)).equal(stakingAmount);
+
+        await nativeBankC.withdraw();
+        expect(await nativeBankC.balanceOf(staker.address)).equal(0n);
     });
 });
