@@ -97,5 +97,14 @@ describe("TinyBank", () => {
             const rewardToChange = hre.ethers.parseUnits("100", DECIMALS);
             await expect(tinyBankC.connect(managers[managers.length - 1]).setRewardPerBlock(rewardToChange)).to.be.not.reverted;
         });
+
+        it("should revert if it is reset when changing rewardPerBlock", async () => {
+            for (let i = 0; i < managers.length; i++) {
+                await tinyBankC.connect(managers[i]).confirm();
+            }
+            const rewardToChange = hre.ethers.parseUnits("100", DECIMALS);
+            await expect(tinyBankC.setRewardPerBlock(rewardToChange)).to.be.not.reverted;
+            await expect(tinyBankC.setRewardPerBlock(rewardToChange)).to.be.revertedWith("Not all confirmed yet");
+        });
     });
 });
