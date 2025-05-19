@@ -37,7 +37,8 @@ contract MyToken is ManagedAccess {
         address spender = msg.sender;
         require(allowance[from][spender] >= amount, "insufficient allowance");
         allowance[from][spender] -= amount;
-        // balanceOf 는 require 안하나?
+        // balanceOf 는 require 안하나? // 드디어 해결
+        require(balanceOf[from] >= amount, "insufficient balance");
         balanceOf[from] -= amount;
         balanceOf[to] += amount;
         emit Transfer(from, to, amount);
