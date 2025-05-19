@@ -6,3 +6,7 @@ npx hardhat init
 
 (test)  
 npx hardhat test  
+
+(Plugins)
+npm install --save-dev @nomiclabs/hardhat-vyper
+- VS Code Extension: vyper
