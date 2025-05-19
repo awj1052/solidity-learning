@@ -7,7 +7,7 @@ contract NativeBank {
     constructor() {
     }
 
-    modifier noreentrancy() {} {
+    modifier noreentrancy() {
         require(!lock, "is working on");
         lock = true;
         _;
