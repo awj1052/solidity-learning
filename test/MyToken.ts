@@ -32,9 +32,11 @@ describe("My Token", () => {
 
     describe("Mint", () => {
         // 1MT = 1e18
-        it("should return 1MT balance for signer 0", async () => {
+        it("should return initial supply + 1MT balance for signer 0", async () => {
             const signer0 = signers[0];
-            expect(await myTokenC.balanceOf(signer0)).equal(MINTING_AMOUNT * 10n ** DECIMALS);
+            const oneMT = hre.ethers.parseUnits("1", DECIMALS);
+            await myTokenC.mint(oneMT, signer0.address);
+            expect(await myTokenC.balanceOf(signer0)).equal(MINTING_AMOUNT * 10n ** DECIMALS + oneMT);
         });
 
         // TDD

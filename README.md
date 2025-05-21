@@ -10,3 +10,7 @@ npx hardhat test
 (Plugins)
 npm install --save-dev @nomiclabs/hardhat-vyper
 - VS Code Extension: vyper
+
+npx hardhat compile
+npx hardhat typechain
+npx hardhat test test\MyToken.ts
