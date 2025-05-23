@@ -1,4 +1,4 @@
-# @version ^0.4.1
+# @version ^0.3.0
 # @license: MIT
 
 import ManagedAccess
@@ -29,9 +29,9 @@ lastClaimedBlock: HashMap[address, uint256]
 
 @external
 def __init__(_stakingToken: IMyToken):
+    ManagedAccess.__init__(msg.sender, msg.sender)
     self.stakingToken = _stakingToken
     self.rewardPerBlock = INIT_REWARD
-
 
 @external
 def setRewardPerBlock(_rewardPerBlock: uint256):
@@ -42,7 +42,7 @@ def setRewardPerBlock(_rewardPerBlock: uint256):
 def updateReward(_to: address):
     if self.staked[_to] > 0:
         blocks: uint256 = block.number - self.lastClaimedBlock[_to]
-        reward: uint256 = self.rewardPerBlock * blocks * self.staked[_to] // self.totalStaked
+        reward: uint256 = self.rewardPerBlock * blocks * self.staked[_to] / self.totalStaked
         self.stakingToken.mint(reward, _to)
     self.lastClaimedBlock[_to] = block.number
 

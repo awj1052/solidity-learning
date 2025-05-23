@@ -1,18 +1,18 @@
-# @version ^0.4.1
+# @version ^0.3.0
 # @license: MIT
 
 owner: address
 manager: address
 
-@deploy
-def __init__(_stakingToken: address):
-    self.owner = msg.sender
-    self.manager = msg.sender
+@external
+def __init__(_owner: address, _manager: address):
+    self.owner = _owner
+    self.manager = _manager
 
 @internal
-def onlyOwner(_owner: address):
-    assert msg.sender == _owner, "You are not authorized"  
+def onlyOwner(_sender: address):
+    assert _sender == self.owner, "You are not authorized"
 
 @internal
-def onlyManager(_manager: address):
-    assert msg.sender == _manager, "You are not authorized to manage this contract"   
+def onlyManager(_sender: address):
+    assert _sender == self.manager, "You are not authorized to manage this contract"
