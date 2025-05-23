@@ -13,6 +13,8 @@ event Approval:
     amount: uint256
 
 # var: type
+owner: address
+manager: address
 name: public(String[64])
 symbol: public(String[32])
 decimals: public(uint256)
@@ -28,6 +30,16 @@ def __init__(name: String[64], symbol: String[32], decimals: uint256, totalSuppl
     self.decimals = decimals
     self.totalSupply = totalSupply * 10 ** decimals
     self.balanceOf[msg.sender] = totalSupply * 10 ** decimals
+    self.owner = msg.sender
+    self.manager = msg.sender
+
+@internal
+def onlyOwner(_sender: address):
+    assert self.owner == _sender, "You are not authorized"
+
+@internal
+def onlyManager(_sender: address):
+    assert self.manager == _sender, "You are not authorized to manage this contract"
     
 @external
 def transfer(_amount: uint256, _to: address):
@@ -63,5 +75,10 @@ def _mint(_amount: uint256, _to: address):
 
 @external
 def mint(_amount: uint256, _to: address):
+    self.onlyManager(msg.sender)
     self._mint(_amount, _to)
-    
+
+@external
+def setManager(_manager: address):
+    self.onlyOwner(msg.sender)
+    self.manager = _manager
