@@ -24,7 +24,7 @@ contract TinyBank is ManagedAccess {
     mapping(address => uint256) public staked; // solidity는 mapping의 key를 조회 못하지만 빠름
     uint256 public totalStaked;
 
-    constructor(IMyToken _stakingToken, address _managers) ManagedAccess(msg.sender, _managers) {
+    constructor(IMyToken _stakingToken) ManagedAccess(msg.sender, msg.sender) {
         stakingToken = _stakingToken;
         rewardPerBlock = defaultRewardPerBlock;
     }
@@ -42,6 +42,17 @@ contract TinyBank is ManagedAccess {
     function setRewardPerBlock(uint256 _amount) external onlyManager {
         rewardPerBlock = _amount;
     }
+
+    function currentReward(address to) external view returns (uint256) {
+        if (staked[to] > 0) {
+            uint256 blocks = block.number - lastClaimedBlock[to];
+            return (blocks * rewardPerBlock * staked[to]) / totalStaked;
+        } else {
+            return 0;
+        }
+    }
+
+
 
     function stake(uint256 _amount) external updateReward(msg.sender) {
         require(_amount >= 0, "cannnot stake 0 amount");

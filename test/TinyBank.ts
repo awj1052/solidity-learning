@@ -14,12 +14,12 @@ describe("TinyBank", () => {
         signers = await hre.ethers.getSigners();
         myTokenC = await hre.ethers.deployContract("MyToken", ["MyToken", "MT", DECIMALS, MINTING_AMOUNT]);
         
-        const manager0 = signers[0];
+        // const manager0 = signers[0];
         // const manager1 = signers[2];
         // const manager2 = signers[4];
         // managers = [manager0, manager1, manager2];
         // tinyBankC = await hre.ethers.deployContract("TinyBank", [await myTokenC.getAddress(), managers.map((m) => m.address)]);
-        tinyBankC = await hre.ethers.deployContract("TinyBank", [await myTokenC.getAddress(), manager0.address]);
+        tinyBankC = await hre.ethers.deployContract("TinyBank", [await myTokenC.getAddress()]);
         await myTokenC.setManager(tinyBankC.getAddress()); // reward 때문에 manager로 설정
     });
 
